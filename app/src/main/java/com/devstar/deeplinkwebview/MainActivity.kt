@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
 import android.webkit.WebSettings.LOAD_NO_CACHE
+import android.webkit.WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
@@ -52,15 +53,26 @@ fun FUllWebView() {
             settings.loadsImagesAutomatically = true
             settings.javaScriptEnabled = true
             settings.cacheMode = LOAD_NO_CACHE
+            settings.builtInZoomControls = true
+            settings.displayZoomControls = true
+            settings.domStorageEnabled = true
+            settings.mixedContentMode = MIXED_CONTENT_COMPATIBILITY_MODE
             loadUrl(Constants.WEBVIEW_LOAD_URL)
 
             webViewClient = object : WebViewClient() {
                 override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
                     if (url.contains(Constants.DEEP_LINK_PREFIX)) {
                         Log.d("MainActivity", "shouldOverrideUrlLoading: $url")
-                        val intent = Intent(Intent.ACTION_VIEW)
-                        intent.data = Uri.parse(url)
-                        startActivity(context, intent, null)
+                        try {
+                            val intent = Intent(Intent.ACTION_VIEW)
+                            intent.data = Uri.parse(url)
+                            startActivity(context, intent, null)
+                        } catch (e: Exception) {
+                            val intent = Intent(Intent.ACTION_VIEW)
+                            intent.data = Uri.parse(Constants.PAYTM_URL)
+                            startActivity(context, intent, null)
+                        }
+
                     } else {
                         view?.loadUrl(url)
                     }
