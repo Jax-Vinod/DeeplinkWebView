@@ -11,7 +11,6 @@ import android.view.inputmethod.EditorInfo
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.doOnTextChanged
 import com.devstar.deeplinkwebview.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -67,6 +66,7 @@ class MainActivity : AppCompatActivity() {
 
         binding.inputUrl.setOnEditorActionListener { inputView , actionId, event ->
             if(actionId == EditorInfo.IME_ACTION_GO){
+                binding.progressCircular.visibility = VISIBLE
                 webView.loadUrl(inputView.text.toString())
                 true
             } else false
